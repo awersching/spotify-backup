@@ -5,8 +5,9 @@ import gin
 @gin.configurable
 class Authorization:
 
-    def __init__(self, scopes=[]):
+    def __init__(self, scopes=None):
         self.scopes = scopes
 
     def authorize(self):
-        token = util.prompt_for_user_token('6247', self.scopes)
+        username = input('Enter username: ')
+        token = util.prompt_for_user_token(username, self.scopes)

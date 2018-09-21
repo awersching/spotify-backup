@@ -4,3 +4,6 @@ Authorization.scopes = [
     'playlist-read-collaborative',
     'user-follow-read'
 ]
+
+Backup.save_as_json = True
+Backup.save_as_txt = True
