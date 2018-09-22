@@ -8,7 +8,7 @@ class SpotifyResource:
         PLAYLISTS = auto()
         PLAYLIST = auto()
 
-    def __init__(self, json, name, type: Type):
+    def __init__(self, json, type: Type, name=None):
         self.json = json
-        self.name = name
         self.type = type
+        self.name = name

@@ -18,6 +18,5 @@ class Authorization:
         self.scopes = ' '.join(map(str, scopes))
 
     def authorize(self) -> Spotify:
-        print("Don't run this from IntelliJ terminal as it will mess up the link input")
         token = util.prompt_for_user_token(self.username, self.scopes)
         return Spotify(auth=token)

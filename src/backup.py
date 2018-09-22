@@ -21,19 +21,19 @@ class Backup:
     def backup(self):
         followed = self.request.get_followed()
         songs = self.request.get_saved_songs()
-        playlist_ids = self.request.get_playlists()
+        playlists = self.request.get_playlists()
 
         if self.save_as_json:
             self.save_json(followed)
             self.save_json(songs)
-            for playlist_id in playlist_ids:
-                self.save_json(self.request.get_playlist(playlist_id))
+            for playlist in playlists.json:
+                self.save_json(self.request.get_playlist_songs(playlist))
 
         if self.save_as_txt:
             self.save_txt(followed)
             self.save_txt(songs)
-            for playlist_id in playlist_ids:
-                self.save_txt(self.request.get_playlist(playlist_id))
+            for playlist in playlists.json:
+                self.save_txt(self.request.get_playlist_songs(playlist))
 
     def save_json(self, resource: SpotifyResource):
         file_name = self.output_directory + resource.name + '.json'
