@@ -1,5 +1,3 @@
 Authorization.username = '6247'
 
-Backup.save_as_json = True
-Backup.save_as_txt = True
 Backup.output_directory = '/home/adrian/Backup/spotify/'
