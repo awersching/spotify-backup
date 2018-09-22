@@ -1,10 +1,5 @@
 Authorization.username = '6247'
-Authorization.scopes = [
-    'user-library-read',
-    'playlist-read-private',
-    'playlist-read-collaborative',
-    'user-follow-read'
-]
 
 Backup.save_as_json = True
 Backup.save_as_txt = True
+Backup.output_directory = '/home/adrian/Backup/spotify/'

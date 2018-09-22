@@ -1,59 +1,50 @@
-import gin
-from spotipy import Spotify
+import json
 
-from TxtParser import TxtParser
-from authorization import Authorization
+import gin
+
+from spotify_request import SpotifyRequest
+from spotify_resource import SpotifyResource
+from txt_parser import TxtParser
 
 
 @gin.configurable
 class Backup:
 
-    def __init__(self, save_as_json=True, save_as_txt=True):
-        self.PAGE_LIMIT = 50
-
+    def __init__(self, save_as_json=True, save_as_txt=True, output_directory='../'):
         self.save_as_json = save_as_json
         self.save_as_txt = save_as_txt
+        self.output_directory = output_directory
 
-        self.spotify: Spotify = Authorization().authorize()
-        self.txt_parser = TxtParser()
+        self.request = SpotifyRequest()
+        self.parser = TxtParser()
 
     def backup(self):
-        followed = self._get_followed()
-        playlists = self._get_playlists()
-        songs = self._get_saved_songs()
+        followed = self.request.get_followed()
+        songs = self.request.get_saved_songs()
+        playlist_ids = self.request.get_playlists()
 
         if self.save_as_json:
             self.save_json(followed)
-            self.save_json(playlists)
             self.save_json(songs)
+            for playlist_id in playlist_ids:
+                self.save_json(self.request.get_playlist(playlist_id))
+
         if self.save_as_txt:
             self.save_txt(followed)
-            self.save_txt(playlists)
             self.save_txt(songs)
+            for playlist_id in playlist_ids:
+                self.save_txt(self.request.get_playlist(playlist_id))
 
-    def _get_followed(self) -> []:
-        print('Backing up followed artists...')
+    def save_json(self, resource: SpotifyResource):
+        file_name = self.output_directory + resource.name + '.json'
 
-        current_page = self.spotify.current_user_followed_artists(limit=self.PAGE_LIMIT)
-        after = current_page['artists']['cursors']['after']
-        all = []
+        with open(file_name, 'w') as file:
+            json.dump(resource.json, file)
 
-        while after:
-            all.append(current_page['artists']['items'])
-            after = current_page['artists']['cursors']['after']
-            current_page = self.spotify.current_user_followed_artists(limit=self.PAGE_LIMIT, after=after)
-        return all
+    def save_txt(self, resource: SpotifyResource):
+        file_name = self.output_directory + resource.name + '.txt'
+        txt = self.parser.to_txt(resource)
 
-    def _get_playlists(self) -> []:
-        print('Backing up playlists...')
-        return []
-
-    def _get_saved_songs(self) -> []:
-        print('Backing up saved songs...')
-        return []
-
-    def save_json(self, json):
-        pass
-
-    def save_txt(self, json):
-        txt = self.txt_parser.to_txt(json)
+        with open(file_name, 'w') as file:
+            for line in txt:
+                file.write(line + '\n')
