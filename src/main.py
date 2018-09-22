@@ -1,10 +1,8 @@
-from authorization import Authorization
-from backup import Backup
-
 import gin
+
+from backup import Backup
 
 if __name__ == '__main__':
     gin.parse_config_file('../config.gin', True)
 
-    Authorization().authorize()
-    Backup().save()
+    Backup().backup()

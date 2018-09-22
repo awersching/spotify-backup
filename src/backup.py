@@ -1,4 +1,7 @@
 import gin
+from spotipy import Spotify
+
+from authorization import Authorization
 
 
 @gin.configurable
@@ -8,5 +11,5 @@ class Backup:
         self.save_as_json = save_as_json
         self.saves_as_txt = save_as_txt
 
-    def save(self):
-        pass
+    def backup(self):
+        spotify: Spotify = Authorization().authorize()

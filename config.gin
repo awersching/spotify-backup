@@ -1,3 +1,4 @@
+Authorization.username = '6247'
 Authorization.scopes = [
     'user-library-read',
     'playlist-read-private',
