@@ -6,8 +6,8 @@ from spotify.parser import Parser
 @gin.configurable
 class Backup:
 
-    def __init__(self, output_directory='../'):
-        self.output_directory = output_directory
+    def __init__(self, output_directory=None):
+        self.output_directory = output_directory if output_directory else '../'
         self.parser = Parser()
 
     def backup(self):

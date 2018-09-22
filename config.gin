@@ -1,3 +1,3 @@
-Authorization.username = '6247'
+Authorization.username = None
 
-Backup.output_directory = '/home/adrian/Backup/spotify/'
+Backup.output_directory = '../'
