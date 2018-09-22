@@ -19,7 +19,16 @@ class TxtParser:
         return artists
 
     def _to_songs_txt(self, resource: SpotifyResource) -> [str]:
-        return []
+        songs = []
+
+        for song in resource.json:
+            song = song['track']
+
+            name = song['name']
+            artists = list(map(lambda artist: artist['name'], song['artists']))
+            album = song['album']['name']
+            songs.append(name + ' - ' + ", ".join(artists) + ' (' + album + ')')
+        return songs
 
     def _to_playlist_txt(self, resource: SpotifyResource) -> [str]:
         return []
