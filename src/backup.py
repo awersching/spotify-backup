@@ -8,15 +8,15 @@ class Backup:
 
     def __init__(self, output_directory='../'):
         self.output_directory = output_directory
-        self.request = Parser()
+        self.parser = Parser()
 
     def backup(self):
-        self.save(self.request.get_followed_artists())
-        self.save(self.request.get_saved_songs())
+        self.save(self.parser.get_followed_artists())
+        self.save(self.parser.get_saved_songs())
 
-        for playlist in self.request.get_playlists():
+        for playlist in self.parser.get_playlists():
             try:
-                self.save(self.request.get_playlist_songs(playlist))
+                self.save(self.parser.get_playlist_songs(playlist))
             except LookupError:
                 print('Tracks of playlist ' + playlist[0] + ' not queryable over API')
 

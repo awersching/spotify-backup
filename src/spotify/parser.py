@@ -30,45 +30,36 @@ class Parser:
     def get_saved_songs(self) -> (str, []):
         print('Backing up saved songs...')
 
-        all = []
-        offset = 0
-        while True:
-            current_page = self.spotify.current_user_saved_tracks(limit=self.PAGE_LIMIT, offset=offset)
-            songs = current_page['items']
-            all += (Song(song['track']) for song in songs)
-
-            next = current_page['next']
-            offset += self.PAGE_LIMIT
-            if not next:
-                break
+        next_page = lambda offset: self.spotify.current_user_saved_tracks(limit=self.PAGE_LIMIT, offset=offset)
+        parse_items = lambda items: (Song(song['track']) for song in items)
+        all = self._get_with_offset(next_page, parse_items)
         return 'songs', all
 
     def get_playlists(self) -> [(str, str)]:
         print('Backing up playlists...')
 
+        next_page = lambda offset: self.spotify.current_user_playlists(limit=self.PAGE_LIMIT, offset=offset)
+        parse_items = lambda items: ((playlist['name'], playlist['id']) for playlist in items)
+        return self._get_with_offset(next_page, parse_items)
+
+    def get_playlist_songs(self, playlist: (str, str)) -> (str, []):
+        next_page = lambda offset: self.spotify.user_playlist_tracks(self.auth.username, playlist_id=playlist[1],
+                                                                     offset=offset)
+        parse_items = lambda items: (Song(song['track']) for song in items)
+
+        all = self._get_with_offset(next_page, parse_items)
+        return playlist[0], all
+
+    def _get_with_offset(self, next_page, parse_items) -> []:
         all = []
         offset = 0
+
         while True:
-            current_page = self.spotify.current_user_playlists(limit=self.PAGE_LIMIT, offset=offset)
-            playlists = current_page['items']
-            all += ((playlist['name'], playlist['id']) for playlist in playlists)
+            current_page = next_page(offset)
+            all += parse_items(current_page['items'])
 
             next = current_page['next']
             offset += self.PAGE_LIMIT
             if not next:
                 break
         return all
-
-    def get_playlist_songs(self, playlist: (str, str)) -> (str, []):
-        all = []
-        offset = 0
-        while True:
-            current_page = self.spotify.user_playlist_tracks(self.auth.username, playlist_id=playlist[1], offset=offset)
-            songs = current_page['items']
-            all += (Song(song['track']) for song in songs)
-
-            next = current_page['next']
-            offset += self.PAGE_LIMIT
-            if not next:
-                break
-        return playlist[0], all
