@@ -1,6 +1,7 @@
 
 # Created by https://www.gitignore.io/api/python,intellij
 
+*.directory
 .cache*
 *.txt
 *.json
