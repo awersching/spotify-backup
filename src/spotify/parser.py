@@ -44,7 +44,7 @@ class Parser:
 
     def get_playlist_songs(self, playlist: (str, str)) -> (str, []):
         next_page = lambda offset: self.spotify.user_playlist_tracks(self.auth.username, playlist_id=playlist[1],
-                                                                     offset=offset)
+                                                                     offset=offset, limit=self.PAGE_LIMIT)
         parse_items = lambda items: (Song(song['track']) for song in items)
 
         all = self._get_with_offset(next_page, parse_items)
